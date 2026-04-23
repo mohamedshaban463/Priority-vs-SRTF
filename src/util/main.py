@@ -17,64 +17,44 @@ class Window(QMainWindow):
     def run_priority(self):
         
 
-        priority_data=[
+       self.priority_data=[
                      ["p1",2,8,0],
                        ["p2",1,5,1],
                         ["p3",4,7,3]
         ]
 
-        self.show_table(priority_data)
+       self.show_table(self.priority_data)
 
-        print("Priority running.")
+       print("Priority running.")
 
 
     def run_srtf(self):
-        data=[
+        self.data=[
                      ["p1",1,6,0],
                        ["p2",0,3,0],
                         ["p3",2,5,1]
         ]
-        self.show_table(data)
+        self.show_table(self.data)
         print("SRTF running")
 
+
     def compare(self):
+     print("Comparing")
 
-         p_wt = sum(row[1] for row in self.priority_data) / len(self.priority_data)
-         p_tat = sum(row[2] for row in self.priority_data) / len(self.priority_data)
-         p_rt = sum(row[3] for row in self.priority_data) / len(self.priority_data)
+     if not hasattr(self, "priority_data") or not hasattr(self, "data"):
+        self.ui.comparison.setText("Run Priority and SRTF first!")
+        return
 
-         s_wt=sum(row[1] for row in self.data)/len(self.data)
+     p_wt = sum(row[1] for row in self.priority_data) / len(self.priority_data)
+     s_wt = sum(row[1] for row in self.data) / len(self.data)
 
-         s_tat=sum(row[2] for row in self.data)/len(self.data)
-         s_rt=sum(row[3] for row in self.data)/len(self.data)
+     best = "SRTF" if s_wt < p_wt else "Priority"
 
-
-
-         if s_wt < p_wt:
-           best = "SRTF"
-         else:
-          best = "Priority"
-
-
- 
-         result_text = f"""
-        Priority:
-    WT = {p_wt:.2f}, TAT = {p_tat:.2f}, RT = {p_rt:.2f}
-
-     SRTF:
-     WT = {s_wt:.2f}, TAT = {s_tat:.2f}, RT = {s_rt:.2f}
-
-     best: {best}
-     """
-
-         self.ui.label.setText(result_text)
-            
-         print("Comparing")
-
-
-
-
-
+     self.ui.comparison.setText(
+        f"Priority WT = {p_wt:.2f}\n"
+        f"SRTF WT = {s_wt:.2f}\n"
+        f"Best = {best}"
+    )
 
 
 
