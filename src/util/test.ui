@@ -45,17 +45,17 @@
       </column>
       <column>
        <property name="text">
-        <string>Arrival_Time</string>
+        <string>Waiting_Time</string>
        </property>
       </column>
       <column>
        <property name="text">
-        <string>Burst_Time</string>
+        <string>Turnaround_Time</string>
        </property>
       </column>
       <column>
        <property name="text">
-        <string>Priority</string>
+        <string>Response time</string>
        </property>
       </column>
      </widget>

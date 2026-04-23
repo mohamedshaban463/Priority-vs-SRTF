@@ -71,21 +71,11 @@ class Ui_MainWindow(object):
         item = self.tableWidget.horizontalHeaderItem(0)
         item.setText(_translate("MainWindow", "Process ID"))
         item = self.tableWidget.horizontalHeaderItem(1)
-        item.setText(_translate("MainWindow", "Arrival_Time"))
+        item.setText(_translate("MainWindow", "Waiting_Time"))
         item = self.tableWidget.horizontalHeaderItem(2)
-        item.setText(_translate("MainWindow", "Burst_Time"))
+        item.setText(_translate("MainWindow", "Turnaround_Time"))
         item = self.tableWidget.horizontalHeaderItem(3)
-        item.setText(_translate("MainWindow", "Priority"))
+        item.setText(_translate("MainWindow", "Response time"))
         self.comparison.setText(_translate("MainWindow", "Comparison"))
         self.compareButton.setText(_translate("MainWindow", "Compare"))
         self.menuOS_PROJECT.setTitle(_translate("MainWindow", "OS PROJECT"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
