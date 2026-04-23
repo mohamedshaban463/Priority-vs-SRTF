@@ -25,7 +25,7 @@ def priority_schedule(processes):
             current_time = next_arrival
             continue
 
-        # MENNA'S PRIORITY RULE: Smallest priority integer wins. Tie-break with Arrival Time.
+        # PRIORITY RULE: Smallest priority integer wins. Tie-break with Arrival Time.
         selected = min(
             available,
             key=lambda p: (p.priority, p.arrival_time, p.id)
