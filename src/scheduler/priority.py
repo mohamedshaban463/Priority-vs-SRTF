@@ -56,7 +56,7 @@ def priority_schedule(processes):
 
     gantt_chart = _merge_gantt(gantt_raw)
     
-    # Calculate final metrics using Menna's calculator
+    # Calculate final metrics using calculator
     calculate_all_metrics(processes)
 
     return processes, gantt_chart
