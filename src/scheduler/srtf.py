@@ -1,4 +1,4 @@
-from .calculator import calculate_all_metrics
+from ..metrics.calculator import calculate_all_metrics
 
 def srtf_schedule(processes):
     if not processes:
@@ -24,7 +24,6 @@ def srtf_schedule(processes):
             current_time = next_arrival
             continue
 
-        # SRTF RULE: Shortest remaining time wins. Tie-break with Arrival Time.
         selected = min(
             available,
             key=lambda p: (p.remaining_time, p.arrival_time, p.id)
@@ -55,7 +54,6 @@ def srtf_schedule(processes):
 
     gantt_chart = _merge_gantt(gantt_raw)
     
-    # Calculate final metrics using Menna's calculator
     calculate_all_metrics(processes)
 
     return processes, gantt_chart
@@ -71,5 +69,3 @@ def _merge_gantt(segments):
         else:
             merged.append([start, end, pid])
     return [tuple(seg) for seg in merged]
-
-

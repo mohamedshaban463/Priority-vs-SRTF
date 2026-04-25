@@ -1,1 +1,1 @@
-from .Process import Process
+from . import Process
