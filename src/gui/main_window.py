@@ -44,7 +44,7 @@ class GanttWidget(QWidget):
 
 
 app = QtWidgets.QApplication(sys.argv)
-window = uic.loadUi(r"D:\learn\design.ui")
+window = uic.loadUi(r"src/gui/ui/design.ui")
 
 custom = GanttWidget(window)
 custom.setGeometry(window.widget.geometry())
