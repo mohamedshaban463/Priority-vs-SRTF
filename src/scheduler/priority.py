@@ -1,10 +1,9 @@
-from calculator import calculate_all_metrics
+from ..metrics.calculator import calculate_all_metrics
 
 def priority_schedule(processes):
     if not processes:
         return [], []
 
-    # Reset processes for a clean run
     for p in processes:
         p.reset()
 
@@ -25,7 +24,6 @@ def priority_schedule(processes):
             current_time = next_arrival
             continue
 
-        # PRIORITY RULE: Smallest priority integer wins. Tie-break with Arrival Time.
         selected = min(
             available,
             key=lambda p: (p.priority, p.arrival_time, p.id)
@@ -56,7 +54,6 @@ def priority_schedule(processes):
 
     gantt_chart = _merge_gantt(gantt_raw)
     
-    # Calculate final metrics using calculator
     calculate_all_metrics(processes)
 
     return processes, gantt_chart
