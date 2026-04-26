@@ -1,4 +1,4 @@
-from ..metrics.calculator import calculate_all_metrics
+from metrics.calculator import calculate_all_metrics
 
 def srtf_schedule(processes):
     if not processes:

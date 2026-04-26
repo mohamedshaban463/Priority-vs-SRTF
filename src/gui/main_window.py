@@ -1,8 +1,16 @@
+import sys, os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from scheduler.priority import priority_schedule
+from scheduler.srtf import srtf_schedule
+
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QPainter, QColor
 import sys
-from scheduler import priority_schedule, srtf_schedule
+
+
 
 
 class Process:
@@ -43,14 +51,6 @@ class GanttWidget(QWidget):
         painter.drawText(last_end * scale + 20, y + 70, str(last_end))
 
 
-app = QtWidgets.QApplication(sys.argv)
-window = uic.loadUi(r"src/gui/ui/design.ui")
-
-custom = GanttWidget(window)
-custom.setGeometry(window.widget.geometry())
-window.widget.hide()
-
-
 def draw():
     processes = []
     rows = window.tableWidget.rowCount()
@@ -72,6 +72,13 @@ def draw():
     custom.update()
 
 
-window.pushButton.clicked.connect(draw)
-window.show()
-sys.exit(app.exec_())
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    window = uic.loadUi(r"src/gui/ui/design.ui")
+    custom = GanttWidget(window)
+    custom.setGeometry(window.widget.geometry())
+    window.widget.hide()
+    window.pushButton.clicked.connect(draw)
+    window.show()
+    sys.exit(app.exec_())
+
