@@ -1,4 +1,4 @@
-from metrics.calculator import calculate_all_metrics
+from calculator import calculate_all_metrics
 
 def srtf_schedule(processes):
     if not processes:
@@ -46,6 +46,7 @@ def srtf_schedule(processes):
         start = current_time
         selected.remaining_time -= run_duration
         current_time += run_duration
+        
         gantt_raw.append((start, current_time, selected.id))
 
         if selected.remaining_time == 0:
