@@ -1,7 +1,10 @@
 import sys
 import os
+import priority
+import srtf
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 from test import Ui_MainWindow
+
 
 class Window(QMainWindow):
     def __init__(self):
@@ -24,7 +27,7 @@ class Window(QMainWindow):
         try:
             self.data = []
             base_path = os.path.dirname(os.path.abspath(__file__))
-            file_path = os.path.join(base_path, "scenario_b_basic.csv")
+            file_path = os.path.join(base_path, "scenario_a_basic.csv")
 
             if not os.path.exists(file_path):
                 self.ui.comparison.setText("Error: scenarioA not found!")
