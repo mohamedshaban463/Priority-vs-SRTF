@@ -124,7 +124,7 @@ class Window(QMainWindow):
                     self.ui.tableWidget_2.setItem(row, col, QTableWidgetItem(str(data[row][col])))
         except Exception as e:
             print(e)
-          
+    
     def show_result_table(self, data):
         try:
             self.ui.tableWidget.setRowCount(len(data))
