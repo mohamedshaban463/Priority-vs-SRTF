@@ -1,5 +1,5 @@
 
-from calculator import calculate_all_metrics
+from ..metrics.calculator import calculate_all_metrics
 
 def priority_schedule(processes):
     if not processes:

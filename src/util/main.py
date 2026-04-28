@@ -1,7 +1,6 @@
 import sys
 import os
-import priority
-import srtf
+from .scheduler import priority , srtf
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 from test import Ui_MainWindow
 
