@@ -2,8 +2,8 @@ import sys, os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from util.priority import priority_schedule
-from util.srtf import srtf_schedule
+from ..scheduler.priority import priority_schedule
+from ..scheduler.srtf import srtf_schedule
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtWidgets import QWidget
