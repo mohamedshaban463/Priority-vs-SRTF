@@ -126,6 +126,12 @@ class Window(QMainWindow):
             result = [["P1", 2, 9, 0], ["P2", 5, 9, 5], ["P3", 7, 8, 7]] 
             self.priority_data = result
             self.show_result_table(result)
+            gantt_fake = [
+            (0, 2, "P1"),
+            (2, 5, "P2"),
+            (5, 7, "P3")  ]
+
+            self.draw_gantt(gantt_fake)
             self.ui.comparison.setText("Priority Running")
         except Exception as e:
             self.ui.comparison.setText("Priority Error")
@@ -143,6 +149,12 @@ class Window(QMainWindow):
             result = [["P1", 4, 11, 0], ["P2", 0, 2, 0], ["P3", 1, 2, 1]]
             self.srtf_data = result
             self.show_result_table(result)
+            gantt_fake = [
+               (0, 4, "P1"),
+               (4, 6, "P2"),
+               (6, 8, "P3") ]
+
+            self.draw_gantt(gantt_fake)
             self.ui.comparison.setText("SRTF Running")
         except Exception as e:
             self.ui.comparison.setText("SRTF Error")
@@ -180,8 +192,58 @@ class Window(QMainWindow):
                     self.ui.tableWidget.setItem(row, col, QTableWidgetItem(str(data[row][col])))
         except Exception as e:
             print(e)
+    def draw_gantt(self, gantt):
+     from PyQt5.QtGui import QPixmap, QPainter, QPen, QColor
+     from PyQt5.QtCore import Qt
+
+     if not gantt:
+        return
+
+     pixmap = QPixmap(950, 160)
+     pixmap.fill(Qt.white)
+
+     painter = QPainter(pixmap)
+     painter.setPen(QPen(Qt.black, 2))
+
+    
+     fixed_colors = {
+        "P1": QColor(204, 0, 0),   # أحمر
+        "P2": QColor(54, 162, 235),   # أزرق
+        "P3": QColor(255, 206, 86),   # أصفر
+        "P4": QColor(75, 192, 192),   # أخضر
+        "P5": QColor(153, 102, 255),  # بنفسجي
+     }
+
+     x = 20
+     y = 40
+     scale = 35
+
+     for start, end, pid in gantt:
+        width = (end - start) * scale
+
+        
+        if pid == "IDLE":
+            color = QColor(200, 200, 200)
+        else:
+            color = fixed_colors.get(pid, QColor(120, 120, 120))
+
+        painter.setBrush(color)
+
+        
+        painter.drawRect(x, y, width, 50)
+
+        painter.drawText(x + 5, y + 30, str(pid))
+
+        painter.drawText(x, y + 80, str(start))
+
+        x += width
 
 
+     painter.drawText(x, y + 80, str(gantt[-1][1]))
+
+     painter.end()
+
+     self.ui.gantt.setPixmap(pixmap)
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     win = Window()
