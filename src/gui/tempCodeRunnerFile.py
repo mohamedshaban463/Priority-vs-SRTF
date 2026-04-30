@@ -1,1 +1,0 @@
-window = uic.loadUi(r"src/gui/ui/design.ui")

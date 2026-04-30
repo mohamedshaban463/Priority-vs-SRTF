@@ -1,9 +1,9 @@
 import sys
 import os
-from .src.scheduler.priority import priority_schedule
-from .src.scheduler.srtf import srtf_schedule
+from src.gui.test import Ui_MainWindow
+from src.scheduler.Priority import priority_schedule
+from src.scheduler.SRTF import srtf_schedule
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
-from test import Ui_MainWindow
 
 
 class Window(QMainWindow):
@@ -23,11 +23,27 @@ class Window(QMainWindow):
         self.priority_data = []
         self.srtf_data = []
 
+    def update_data_from_table(self):
+        self.data = []
+        for row in range(self.ui.tableWidget_2.rowCount()):
+            pid_item = self.ui.tableWidget_2.item(row, 0)
+            arr_item = self.ui.tableWidget_2.item(row, 1)
+            burst_item = self.ui.tableWidget_2.item(row, 2)
+            prio_item = self.ui.tableWidget_2.item(row, 3)
+            
+            if pid_item and arr_item and burst_item and prio_item:
+                self.data.append([
+                    pid_item.text(),
+                    int(arr_item.text()),
+                    int(burst_item.text()),
+                    int(prio_item.text())
+                ])
+
     def scenario_A(self):
         try:
             self.data = []
             base_path = os.path.dirname(os.path.abspath(__file__))
-            file_path = os.path.join(base_path, "scenario_a_basic.csv")
+            file_path = os.path.join(base_path, "./test-cases/scenario_a_basic.csv")
 
             if not os.path.exists(file_path):
                 self.ui.comparison.setText("Error: scenarioA not found!")
@@ -52,7 +68,32 @@ class Window(QMainWindow):
         try:
             self.data = []
             base_path = os.path.dirname(os.path.abspath(__file__))
-            file_path = os.path.join(base_path, "scenario_b_basic.csv")
+            file_path = os.path.join(base_path, "./test-cases/scenario_b_basic.csv")
+
+            if not os.path.exists(file_path):
+                self.ui.comparison.setText("Error: scenario_b_basic.csv not found!")
+                return
+
+            with open(file_path, "r") as file:
+                for line in file:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    row = line.split(",")
+                    if len(row) >= 4:
+                        self.data.append([row[0], int(row[1]), int(row[2]), int(row[3])])
+
+            self.show_input_table(self.data)
+            self.ui.comparison.setText("Scenario B Loaded")
+        except Exception as e:
+            self.ui.comparison.setText("Error in Scenario B")
+            print(e)
+
+    def scenario_B(self):
+        try:
+            self.data = []
+            base_path = os.path.dirname(os.path.abspath(__file__))
+            file_path = os.path.join(base_path, "./test-cases/scenario_b_basic.csv")
 
             if not os.path.exists(file_path):
                 self.ui.comparison.setText("Error: scenario_b_basic.csv not found!")
@@ -75,11 +116,14 @@ class Window(QMainWindow):
 
     def run_priority(self):
         try:
+            self.update_data_from_table() 
+
             if not self.data:
-                self.ui.comparison.setText("Choose Scenario First")
+                self.ui.comparison.setText("Table empty. Add processes first.")
                 return
             
-            result = [["P1", 2, 9, 0], ["P2", 5, 9, 5], ["P3", 7, 8, 7]]
+             
+            result = [["P1", 2, 9, 0], ["P2", 5, 9, 5], ["P3", 7, 8, 7]] 
             self.priority_data = result
             self.show_result_table(result)
             self.ui.comparison.setText("Priority Running")
@@ -89,10 +133,13 @@ class Window(QMainWindow):
 
     def run_srtf(self):
         try:
+            self.update_data_from_table()
+
             if not self.data:
-                self.ui.comparison.setText("Choose Scenario First")
+                self.ui.comparison.setText("Table empty. Add processes first.")
                 return
 
+            
             result = [["P1", 4, 11, 0], ["P2", 0, 2, 0], ["P3", 1, 2, 1]]
             self.srtf_data = result
             self.show_result_table(result)
@@ -133,6 +180,7 @@ class Window(QMainWindow):
                     self.ui.tableWidget.setItem(row, col, QTableWidgetItem(str(data[row][col])))
         except Exception as e:
             print(e)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

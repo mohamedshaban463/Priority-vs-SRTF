@@ -1,5 +1,9 @@
+__package__ = 'scheduler'
+from src.metrics.calculator import calculate_all_metrics
 
-from ..metrics.calculator import calculate_all_metrics
+
+def __init__(self):
+    pass
 
 def priority_schedule(processes):
     if not processes:

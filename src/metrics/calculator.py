@@ -1,3 +1,6 @@
+__package__ = 'metrics'
+
+
 def calculate_all_metrics(processes):
 
     n = len(processes)
