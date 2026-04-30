@@ -207,11 +207,11 @@ class Window(QMainWindow):
 
     
      fixed_colors = {
-        "P1": QColor(204, 0, 0),   # أحمر
-        "P2": QColor(54, 162, 235),   # أزرق
-        "P3": QColor(255, 206, 86),   # أصفر
-        "P4": QColor(75, 192, 192),   # أخضر
-        "P5": QColor(153, 102, 255),  # بنفسجي
+        "P1": QColor(204, 0, 0),  
+        "P2": QColor(54, 162, 235),   
+        "P3": QColor(255, 206, 86),   
+        "P4": QColor(75, 192, 192),        
+        "P5": QColor(153, 102, 255),  
      }
 
      x = 20
