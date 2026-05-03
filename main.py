@@ -3,6 +3,7 @@ import os
 from src.gui.test import Ui_MainWindow
 from src.scheduler.Priority import priority_schedule
 from src.scheduler.SRTF import srtf_schedule
+from src.model.Process import Process
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 
 
@@ -18,6 +19,7 @@ class Window(QMainWindow):
         self.ui.compareButton.clicked.connect(self.compare)
         self.ui.scenarioA_Button_2.clicked.connect(self.scenario_A)
         self.ui.scenarioB_Button.clicked.connect(self.scenario_B)
+        self.ui.scenarioC_Button.clicked.connect(self.scenario_C)
 
         self.data = []
         self.priority_data = []
@@ -32,12 +34,16 @@ class Window(QMainWindow):
             prio_item = self.ui.tableWidget_2.item(row, 3)
             
             if pid_item and arr_item and burst_item and prio_item:
-                self.data.append([
-                    pid_item.text(),
-                    int(arr_item.text()),
-                    int(burst_item.text()),
-                    int(prio_item.text())
-                ])
+                try:
+                    process = Process(
+                        process_id=pid_item.text(),
+                        arrival_time=int(arr_item.text()),
+                        burst_time=int(burst_item.text()),
+                        priority=int(prio_item.text())
+                    )
+                    self.data.append(process)
+                except (ValueError, TypeError):
+                    continue
 
     def scenario_A(self):
         try:
@@ -56,7 +62,13 @@ class Window(QMainWindow):
                         continue
                     row = line.split(",")
                     if len(row) >= 4:
-                        self.data.append([row[0], int(row[1]), int(row[2]), int(row[3])])
+                        process = Process(
+                            process_id=row[0],
+                            arrival_time=int(row[1]),
+                            burst_time=int(row[2]),
+                            priority=int(row[3])
+                        )
+                        self.data.append(process)
 
             self.show_input_table(self.data)
             self.ui.comparison.setText("Scenario A Loaded")
@@ -81,7 +93,13 @@ class Window(QMainWindow):
                         continue
                     row = line.split(",")
                     if len(row) >= 4:
-                        self.data.append([row[0], int(row[1]), int(row[2]), int(row[3])])
+                        process = Process(
+                            process_id=row[0],
+                            arrival_time=int(row[1]),
+                            burst_time=int(row[2]),
+                            priority=int(row[3])
+                        )
+                        self.data.append(process)
 
             self.show_input_table(self.data)
             self.ui.comparison.setText("Scenario B Loaded")
@@ -89,14 +107,14 @@ class Window(QMainWindow):
             self.ui.comparison.setText("Error in Scenario B")
             print(e)
 
-    def scenario_B(self):
+    def scenario_C(self):
         try:
             self.data = []
             base_path = os.path.dirname(os.path.abspath(__file__))
-            file_path = os.path.join(base_path, "./test-cases/scenario_b_basic.csv")
+            file_path = os.path.join(base_path, "./test-cases/scenario_c_basic.csv")
 
             if not os.path.exists(file_path):
-                self.ui.comparison.setText("Error: scenario_b_basic.csv not found!")
+                self.ui.comparison.setText("Error: scenario_c_basic.csv not found!")
                 return
 
             with open(file_path, "r") as file:
@@ -106,12 +124,18 @@ class Window(QMainWindow):
                         continue
                     row = line.split(",")
                     if len(row) >= 4:
-                        self.data.append([row[0], int(row[1]), int(row[2]), int(row[3])])
+                        process = Process(
+                            process_id=row[0],
+                            arrival_time=int(row[1]),
+                            burst_time=int(row[2]),
+                            priority=int(row[3])
+                        )
+                        self.data.append(process)
 
             self.show_input_table(self.data)
-            self.ui.comparison.setText("Scenario B Loaded")
+            self.ui.comparison.setText("Scenario C Loaded")
         except Exception as e:
-            self.ui.comparison.setText("Error in Scenario B")
+            self.ui.comparison.setText("Error in Scenario C")
             print(e)
 
     def run_priority(self):
@@ -122,16 +146,15 @@ class Window(QMainWindow):
                 self.ui.comparison.setText("Table empty. Add processes first.")
                 return
             
-             
-            result = [["P1", 2, 9, 0], ["P2", 5, 9, 5], ["P3", 7, 8, 7]] 
+            processes, gantt_chart = priority_schedule(self.data)
+            
+            result = [
+                [p.id, p.waiting_time, p.turnaround_time, p.response_time]
+                for p in processes
+            ]
             self.priority_data = result
             self.show_result_table(result)
-            gantt_fake = [
-            (0, 2, "P1"),
-            (2, 5, "P2"),
-            (5, 7, "P3")  ]
-
-            self.draw_gantt(gantt_fake)
+            self.draw_gantt(gantt_chart)
             self.ui.comparison.setText("Priority Running")
         except Exception as e:
             self.ui.comparison.setText("Priority Error")
@@ -145,16 +168,15 @@ class Window(QMainWindow):
                 self.ui.comparison.setText("Table empty. Add processes first.")
                 return
 
+            processes, gantt_chart = srtf_schedule(self.data)
             
-            result = [["P1", 4, 11, 0], ["P2", 0, 2, 0], ["P3", 1, 2, 1]]
+            result = [
+                [p.id, p.waiting_time, p.turnaround_time, p.response_time]
+                for p in processes
+            ]
             self.srtf_data = result
             self.show_result_table(result)
-            gantt_fake = [
-               (0, 4, "P1"),
-               (4, 6, "P2"),
-               (6, 8, "P3") ]
-
-            self.draw_gantt(gantt_fake)
+            self.draw_gantt(gantt_chart)
             self.ui.comparison.setText("SRTF Running")
         except Exception as e:
             self.ui.comparison.setText("SRTF Error")
@@ -179,9 +201,42 @@ class Window(QMainWindow):
         try:
             self.ui.tableWidget_2.setRowCount(len(data))
             for row in range(len(data)):
-                for col in range(len(data[row])):
-                    self.ui.tableWidget_2.setItem(row, col, QTableWidgetItem(str(data[row][col])))
+                if isinstance(data[row], Process):
+                    process = data[row]
+                    self.ui.tableWidget_2.setItem(row, 0, QTableWidgetItem(process.id))
+                    self.ui.tableWidget_2.setItem(row, 1, QTableWidgetItem(str(process.arrival_time)))
+                    self.ui.tableWidget_2.setItem(row, 2, QTableWidgetItem(str(process.burst_time)))
+                    self.ui.tableWidget_2.setItem(row, 3, QTableWidgetItem(str(process.priority)))
+                else:
+                    for col in range(len(data[row])):
+                        self.ui.tableWidget_2.setItem(row, col, QTableWidgetItem(str(data[row][col])))
         except Exception as e:
+            print(e)
+    
+    def add_process(self):
+        try:
+            pid = self.ui.pid_input.text().strip()
+            arr = self.ui.arr_input.value()
+            burst = self.ui.burst_input.value()
+            prio = self.ui.prio_input.value()
+            
+            if not pid:
+                self.ui.comparison.setText("Process ID cannot be empty")
+                return
+            
+            process = Process(pid, arr, burst, prio)
+            self.data.append(process)
+            
+            self.show_input_table(self.data)
+            
+            self.ui.pid_input.clear()
+            self.ui.arr_input.setValue(0)
+            self.ui.burst_input.setValue(0)
+            self.ui.prio_input.setValue(0)
+            
+            self.ui.comparison.setText(f"Process {pid} added successfully")
+        except Exception as e:
+            self.ui.comparison.setText("Error adding process")
             print(e)
     
     def show_result_table(self, data):
