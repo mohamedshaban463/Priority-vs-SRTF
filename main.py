@@ -20,6 +20,7 @@ class Window(QMainWindow):
         self.ui.scenarioA_Button_2.clicked.connect(self.scenario_A)
         self.ui.scenarioB_Button.clicked.connect(self.scenario_B)
         self.ui.scenarioC_Button.clicked.connect(self.scenario_C)
+        self.ui.clearButton.clicked.connect(self.clear_all)
 
         self.data = []
         self.priority_data = []
@@ -248,57 +249,93 @@ class Window(QMainWindow):
         except Exception as e:
             print(e)
     def draw_gantt(self, gantt):
-     from PyQt5.QtGui import QPixmap, QPainter, QPen, QColor
-     from PyQt5.QtCore import Qt
+        from PyQt5.QtGui import QPixmap, QPainter, QPen, QColor, QFont
+        from PyQt5.QtCore import Qt
 
-     if not gantt:
-        return
+        if not gantt:
+            return
 
-     pixmap = QPixmap(950, 160)
-     pixmap.fill(Qt.white)
-
-     painter = QPainter(pixmap)
-     painter.setPen(QPen(Qt.black, 2))
-
-    
-     fixed_colors = {
-        "P1": QColor(204, 0, 0),  
-        "P2": QColor(54, 162, 235),   
-        "P3": QColor(255, 206, 86),   
-        "P4": QColor(75, 192, 192),        
-        "P5": QColor(153, 102, 255),  
-     }
-
-     x = 20
-     y = 40
-     scale = 35
-
-     for start, end, pid in gantt:
-        width = (end - start) * scale
-
+        max_time = max(end for start, end, pid in gantt) if gantt else 0
         
-        if pid == "IDLE":
-            color = QColor(200, 200, 200)
-        else:
-            color = fixed_colors.get(pid, QColor(120, 120, 120))
-
-        painter.setBrush(color)
-
+        scale = 35
+        required_width = max_time * scale + 100
         
-        painter.drawRect(x, y, width, 50)
+        pixmap = QPixmap(max(950, required_width), 200)
+        pixmap.fill(Qt.white)
 
-        painter.drawText(x + 5, y + 30, str(pid))
+        painter = QPainter(pixmap)
+        painter.setPen(QPen(Qt.black, 1))
+        font = QFont()
+        font.setPointSize(8)
+        painter.setFont(font)
 
-        painter.drawText(x, y + 80, str(start))
+        fixed_colors = {
+            "P1": QColor(204, 0, 0),  
+            "P2": QColor(54, 162, 235),   
+            "P3": QColor(255, 206, 86),   
+            "P4": QColor(75, 192, 192),        
+            "P5": QColor(153, 102, 255),  
+        }
 
-        x += width
+        x_start = 50
+        y_start = 40
+        rect_height = 50
 
+        for start, end, pid in gantt:
+            x = x_start + start * scale
+            width = (end - start) * scale
 
-     painter.drawText(x, y + 80, str(gantt[-1][1]))
+            if pid == "IDLE":
+                color = QColor(200, 200, 200)
+            else:
+                color = fixed_colors.get(pid, QColor(120, 120, 120))
 
-     painter.end()
+            painter.setBrush(color)
+            painter.setPen(QPen(Qt.black, 2))
+            painter.drawRect(x, y_start, width, rect_height)
 
-     self.ui.gantt.setPixmap(pixmap)
+            text_x = x + (width - painter.fontMetrics().width(str(pid))) // 2
+            text_y = y_start + rect_height // 2 + 5
+            painter.setPen(QPen(Qt.black, 1))
+            painter.drawText(text_x, text_y, str(pid))
+
+        axis_y = y_start + rect_height + 15
+        painter.setPen(QPen(Qt.black, 2))
+        painter.drawLine(x_start, axis_y, x_start + max_time * scale, axis_y)
+
+        painter.setPen(QPen(Qt.black, 1))
+        for t in range(0, int(max_time) + 1):
+            x = x_start + t * scale
+            painter.drawLine(x, axis_y, x, axis_y + 5)
+            painter.drawText(x - 10, axis_y + 20, str(t))
+
+        painter.end()
+        self.ui.gantt.setPixmap(pixmap)
+
+    def clear_all(self):
+        try:
+            self.data = []
+            self.priority_data = []
+            self.srtf_data = []
+            
+            self.ui.pid_input.clear()
+            self.ui.arr_input.setValue(0)
+            self.ui.burst_input.setValue(0)
+            self.ui.prio_input.setValue(0)
+            
+            self.ui.tableWidget_2.setRowCount(0)
+            
+            self.ui.tableWidget.setRowCount(0)
+            
+            self.ui.gantt.clear()
+            
+            self.ui.comparison.setText("All data cleared. Ready for new input.")
+            
+            self.ui.pid_input.setFocus()
+        except Exception as e:
+            self.ui.comparison.setText("Error clearing data")
+            print(e)
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     win = Window()

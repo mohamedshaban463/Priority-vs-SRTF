@@ -99,6 +99,9 @@ class Ui_MainWindow(object):
         self.compareButton = QtWidgets.QPushButton(self.centralwidget)
         self.compareButton.setObjectName("compareButton")
         self.gridLayout.addWidget(self.compareButton, 1, 5, 1, 1)
+        self.clearButton = QtWidgets.QPushButton(self.centralwidget)
+        self.clearButton.setObjectName("clearButton")
+        self.gridLayout.addWidget(self.clearButton, 1, 6, 1, 1)
         self.gantt = QtWidgets.QLabel(self.centralwidget)
         self.gantt.setObjectName("gantt")
         self.gridLayout.addWidget(self.gantt, 6, 0, 1, 1)
@@ -152,6 +155,7 @@ class Ui_MainWindow(object):
         self.scenarioA_Button_2.setText(_translate("MainWindow", "Scenario A"))
         self.SRTFButton.setText(_translate("MainWindow", "Run SRTF"))
         self.compareButton.setText(_translate("MainWindow", "Compare"))
+        self.clearButton.setText(_translate("MainWindow", "Clear All"))
         self.gantt.setText(_translate("MainWindow", "Gantt charts"))
         self.menuOS_PROJECT.setTitle(_translate("MainWindow", "OS PROJECT"))
 
