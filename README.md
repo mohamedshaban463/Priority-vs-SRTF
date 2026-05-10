@@ -79,12 +79,12 @@ Priority-vs-SRTF/
 
 ## Features
 
-- ✅ Interactive GUI for process scheduling
-- ✅ Dual algorithm comparison (Priority vs SRTF)
-- ✅ Real-time scheduling visualization
-- ✅ Performance metrics calculation (waiting time, turnaround time, etc.)
-- ✅ CSV-based test case support
-- ✅ Educational timeline display
+- Interactive GUI for process scheduling
+- Dual algorithm comparison (Priority vs SRTF)
+- Real-time scheduling visualization
+- Performance metrics calculation (waiting time, turnaround time, etc.)
+- CSV-based test case support
+- Educational timeline display
 
 ## Team Members
 
